@@ -29,8 +29,7 @@ the calculated Ruffier index and level “unsatisfactory” for the tested age, 
 # here the lines which produce the result are given
 txt_index = "Your Ruffier index: "
 txt_workheart = "Heart efficiency: "
-txt_nodata = '''
-there is no data for that age'''
+txt_nodata = "there is no data for that age"
 txt_res = []
 txt_res.append('''low.
 Go see your doctor ASAP!''')
@@ -44,24 +43,36 @@ txt_res.append('''
 high''')
 
 def ruffier_index(P1, P2, P3):
-   ''' it returns the index value according to the three pulse calculations for comparison with the table'''
-    pass
+   return round((4 * (P1+P2+P3) - 200) / 10, 1)
 
 def neud_level(age):
-   ''' the options with an age of less than 7 and with adults have to be processed separately,
-   here we select the level “unsatisfactory” only within the table:
-   for the age of 7, “unsatisfactory” is an index of 21, then onwards every 2 years it decreases by 1.5 until the level of 15 at age 15–16 '''
-    pass
+   norm_age = (min(age, 15) - 7) // 2
+   result = 21 - norm_age * 1.5
+   return result
     
 def ruffier_result(r_index, level):
-   ''' the function obtains a Ruffier index and interprets it,
-   we return the readiness level: a number from 0 to 4
-   (the higher the readiness level, the better).  '''
-    pass
+   if r_index >= level:
+      return 0
+
+   level = level - 4
+   if r_index >= level:
+      return 1
+      
+   level = level - 5
+   if r_index >= level:
+      return 2
+
+   level = level - 5.5
+   if r_index >= level:
+      return 3
+
+   return 4
 
 def test(P1, P2, P3, age):
-     ''' this function can be used from outside the module for calculating the Ruffier index.
-   We return the ready texts that just need to be written in the necessary place
-   We use the constants used at the beginning of this module for texts. '''
-    pass
-
+   if age < 7:
+      return (txt_index + "0", txt_nodata)
+   else:
+      ruff_index = ruffier_index(P1, P2, P3)
+      result = txt_res[ruffier_result(ruff_index, neud_level(age))]
+      res = txt_index + str(ruff_index) + '\n' + txt_workheart + result
+      return res
